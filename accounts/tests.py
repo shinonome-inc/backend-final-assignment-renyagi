@@ -1,30 +1,70 @@
-# from django.test import TestCase
+from django.test import TestCase
 
 
-# class TestSignupView(TestCase):
-#     def test_success_get(self):
+class TestSignupView(TestCase):
+    def setUp(self):
+        self.url = reverse("accounts:signup")
+    
+    def test_success_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/signup.html")
 
-#     def test_success_post(self):
+    def test_success_post(self):
+        def test_success_post(self):
+            valid_data = {
+                "username": "testuser",
+                "email": "test@test.com",
+                "password1": "testpassword",
+                "password2": "testpassword",
+            }
 
-#     def test_failure_post_with_empty_form(self):
+            response = self.client.post(self.url, valid_data)
 
-#     def test_failure_post_with_empty_username(self):
+			# 1の確認 = tweets/homeにリダイレクトすること
+            self.assertRedirects(
+                response,
+                reverse("tweets:home"),
+                status_code=302,
+                target_status_code=200,
+            )
+            # 2の確認 = ユーザーが作成されること
+            self.assertTrue(User.objects.filter(username=valid_data["username"]).exists())
+            # 3の確認 = ログイン状態になること
+            self.assertIn(SESSION_KEY, self.client.session)
 
-#     def test_failure_post_with_empty_email(self):
+    def test_failure_post_with_empty_username(self):
+        invalid_data = {
+            "username": "",
+            "email": "test@test.com",
+            "password1": "testpassword",
+            "password2": "testpassword",
+        }
+        response = self.client.post(self.url, invalid_data)
+				form = response.context["form"]
 
-#     def test_failure_post_with_empty_password(self):
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username=invalid_data["username"]).exists())
+        self.assertFalse(form.is_valid())
+        self.assertIn("このフィールドは必須です。", form.errors["username"])
 
-#     def test_failure_post_with_duplicated_user(self):
+    def test_failure_post_with_empty_username(self):
 
-#     def test_failure_post_with_invalid_email(self):
+    def test_failure_post_with_empty_email(self):
 
-#     def test_failure_post_with_too_short_password(self):
+    def test_failure_post_with_empty_password(self):
 
-#     def test_failure_post_with_password_similar_to_username(self):
+    def test_failure_post_with_duplicated_user(self):
 
-#     def test_failure_post_with_only_numbers_password(self):
+    def test_failure_post_with_invalid_email(self):
 
-#     def test_failure_post_with_mismatch_password(self):
+    def test_failure_post_with_too_short_password(self):
+
+    def test_failure_post_with_password_similar_to_username(self):
+
+    def test_failure_post_with_only_numbers_password(self):
+
+    def test_failure_post_with_mismatch_password(self):
 
 
 # class TestLoginView(TestCase):
