@@ -112,12 +112,11 @@ class TestSignupView(TestCase):
             "password1": "testpassword",
             "password2": "testpassword",
         }
-        valid_response = self.client.post(self.url, valid_data)
-        invalid_response = self.client.post(self.url, invalid_data)
-        self.assertIn("form", invalid_response.context)
-        form = invalid_response.context["form"]
+        response = self.client.post(self.url, invalid_data)
+        self.assertIn("form", response.context)
+        form = response.context["form"]
 
-        self.assertEqual(invalid_response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(User.objects.filter(username=invalid_data["username"]).exists())
         self.assertFalse(form.is_valid())
         self.assertIn("同じユーザー名が既に登録済みです。", form.errors["username"])
