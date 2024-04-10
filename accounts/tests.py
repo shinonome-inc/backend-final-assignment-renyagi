@@ -106,6 +106,7 @@ class TestSignupView(TestCase):
             "password1": "testpassword",
             "password2": "testpassword",
         }
+        self.client.post(self.url, valid_data)
         invalid_data = {
             "username": "testuser",
             "email": "test@test.com",
