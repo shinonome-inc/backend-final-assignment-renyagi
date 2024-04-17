@@ -7,6 +7,7 @@ from .forms import SignupForm
 
 User = get_user_model()
 
+
 class SignupView(CreateView):
     form_class = SignupForm
     template_name = "accounts/signup.html"
@@ -26,5 +27,5 @@ class UserProfileView(DetailView):
     template_name = "accounts/{username}.html"
 
     def get_object(self, queryset=None):
-        username=self.kwargs.get("username")
+        username = self.kwargs.get("username")
         return self.request.user
