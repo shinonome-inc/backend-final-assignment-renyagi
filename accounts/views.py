@@ -1,6 +1,9 @@
 from django.contrib.auth import authenticate, login, get_user_model
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import AuthenticationForm
+
 from django.conf import settings
 
 from .forms import SignupForm
@@ -22,10 +25,18 @@ class SignupView(CreateView):
         return response
 
 
+class UserLoginView(LoginView):
+    form_class = AuthenticationForm
+    template_name = "accounts/login.html"
+
+    def get_success_url(self):
+        username = self.request.user.username
+        return reverse_lazy(settings.LOGIN_REDIRECT_URL, kwargs={"username": username})
+
+
 class UserProfileView(DetailView):
     model = User
-    template_name = "accounts/{username}.html"
+    template_name = "{username}.html"
 
     def get_object(self, queryset=None):
-        username = self.kwargs.get("username")
-        return self.request.user
+        return self.get_queryset().get(username=self.kwargs["username"])
