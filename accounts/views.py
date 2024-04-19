@@ -36,7 +36,7 @@ class UserLoginView(LoginView):
 
 class UserProfileView(DetailView):
     model = User
-    template_name = "{username}.html"
+    template_name = "accounts/{username}.html"
 
     def get_object(self, queryset=None):
         return self.get_queryset().get(username=self.kwargs["username"])
