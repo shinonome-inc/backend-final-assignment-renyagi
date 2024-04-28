@@ -13,7 +13,6 @@ User = get_user_model()
 class SignupView(CreateView):
     form_class = SignupForm
     template_name = "accounts/signup.html"
-    success_url = reverse_lazy(settings.LOGIN_REDIRECT_URL)
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -22,6 +21,10 @@ class SignupView(CreateView):
         user = authenticate(self.request, username=username, password=password)
         login(self.request, user)
         return response
+
+    def get_success_url(self):
+        username = self.object.username
+        return reverse_lazy(settings.LOGIN_REDIRECT_URL, kwargs={"username": username})
 
 
 class UserLoginView(LoginView):
