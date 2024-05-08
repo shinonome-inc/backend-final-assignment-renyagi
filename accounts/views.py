@@ -3,7 +3,10 @@ from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.base import TemplateView
+
 
 from .forms import SignupForm
 
@@ -24,21 +27,12 @@ class SignupView(CreateView):
 
     def get_success_url(self):
         username = self.object.username
-        return reverse_lazy(settings.LOGIN_REDIRECT_URL, kwargs={"username": username})
+        return reverse_lazy(settings.LOGIN_REDIRECT_URL)
 
+class UserProfileView(LoginRequiredMixin, TemplateView):
+    template_name = "accounts/profile.html"
 
-class UserLoginView(LoginView):
-    form_class = AuthenticationForm
-    template_name = "accounts/login.html"
-
-    def get_success_url(self):
-        username = self.request.user.username
-        return reverse_lazy(settings.LOGIN_REDIRECT_URL, kwargs={"username": username})
-
-
-class UserProfileView(DetailView):
-    model = User
-    template_name = "accounts/{username}.html"
-
-    def get_object(self, queryset=None):
-        return self.get_queryset().get(username=self.kwargs["username"])
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = self.request.user
+        return context
