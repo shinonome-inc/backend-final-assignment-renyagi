@@ -1,12 +1,9 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
-
 
 from .forms import SignupForm
 
@@ -26,8 +23,8 @@ class SignupView(CreateView):
         return response
 
     def get_success_url(self):
-        username = self.object.username
         return reverse_lazy(settings.LOGIN_REDIRECT_URL)
+
 
 class UserProfileView(LoginRequiredMixin, TemplateView):
     template_name = "accounts/profile.html"
