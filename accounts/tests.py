@@ -241,7 +241,10 @@ class TestLoginView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username=invalid_data["username"]).exists())
         self.assertFalse(form.is_valid())
-        self.assertEqual(["正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。"], form.errors["__all__"])
+        self.assertEqual(
+            ["正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。"],
+            form.errors["__all__"],
+        )
         self.assertNotIn(SESSION_KEY, self.client.session)
 
     def test_failure_post_with_empty_password(self):
