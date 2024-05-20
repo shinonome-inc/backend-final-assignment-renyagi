@@ -11,6 +11,12 @@
       <ul>
 				<li><a href="{% url 'welcome:welcome' %}">Twitter Clone</a></li>
         <li><a href="{% url 'accounts:signup' %}">Sign up</a></li>
+        <li><a href="{% url 'accounts:login' %}">Login</a></li>
+        {% if request.user.is_authenticated %}
+        <form method="POST" action="/accounts/logout/"> {% csrf_token %}
+          <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+        </form>
+      {% endif %}
       </ul>
     </nav>
   </header>
